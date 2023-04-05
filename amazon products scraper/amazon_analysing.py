@@ -1,58 +1,66 @@
-from time import sleep
-from bs4 import BeautifulSoup
-from selenium import webdriver
+from playwright.sync_api import sync_playwright
+import time 
 import pandas as pd
+from bs4 import BeautifulSoup
 
-options=webdriver.ChromeOptions()
+#-------------------
 
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
-driver=webdriver.Chrome(options=options)
-sleep(3)
+total_pages_to_scrape=1
+output_format =  0     # This value can be 0(excel) or 1(csv)
 data=[]
-for page in range(100):
-    url=f'https://www.amazon.com/s?k=men+watches&i=fashion-mens-watches&rh=n%3A6358540011%2Cp_n_feature_three_browse-bin%3A2205662011&dc&page={page}&crid=19B2C27YBQ427&qid=1672159962&rnid=2205644011&sprefix=menwatches%2Caps%2C530&ref=sr_pg_{page}'
 
-    driver.get(url)
-    sleep(10)
+#-------------------------
 
+with sync_playwright() as p:
+    browser= p.chromium.launch(headless=True)
+    page= browser.new_page()
+    for page_number in range(1,total_pages_to_scrape+1):
+        link=f"https://www.amazon.com/s?k=watches+for+man&i=fashion-mens-watches&page={page_number}&qid=1680665242&sprefix=watches+man%2Cfashion-mens-watches%2C2086&ref=sr_pg_{page_number}"
 
-    mainElement=driver.find_element_by_xpath('//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]') 
-    sleep(3)
-    source=mainElement.get_attribute('outerHTML')
-
-    soup=BeautifulSoup(source,'html.parser')
-
-    allRecquiredProducts=soup.find_all('div',class_='sg-col-4-of-12 s-result-item s-asin sg-col-4-of-16 sg-col s-widget-spacing-small sg-col-4-of-20')
-    for i in allRecquiredProducts:
+        page.goto(link)
         try:
-            title=i.find('div',class_='a-section a-spacing-none a-spacing-top-small s-title-instructions-style').text
+            products_section=page.query_selector("//*[@id='search']/div[1]/div[1]/div")
         except:
-            title=None
-        completeRatingReview=i.find('div',class_='a-section a-spacing-none a-spacing-top-micro')
-        try:
-            rating=completeRatingReview.find('span',class_='a-size-base').text
-        except:
-            rating=None
+            print('not found')
+        else:
+            html=products_section.inner_html()
         
-        try:
-            totalReviews=completeRatingReview.find('span',class_='a-size-base s-underline-text').text
-        except:
-            totalReviews=None
-        try:
-            price=i.find('span',class_='a-offscreen').text
-        except:
-            price=None
-        
-        dataDict={
-            'Title':title,
-            'Price':price,
-            'Rating':rating,
-            'Total Reviews':totalReviews
-        }
+        soup=BeautifulSoup(html,'html.parser')
+        all_cards=soup.find_all('div',class_='a-section a-spacing-base')
+        for card in all_cards:
+            image_url=card.find('img',class_='s-image').get('src')
+            product_link=card.find('a',class_='a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal').get('href')
+            products_title=card.find('span',class_='a-size-base-plus a-color-base a-text-normal').get_text(strip=True)
+            try:
+                total_reviews=card.find('div',class_='a-row a-size-small').find('span',class_='a-size-base s-underline-text').get_text(strip=True)
+            except:
+                total_reviews=None
+            try:
 
-        data.append(dataDict)
+                rating=card.find('div',class_='a-row a-size-small').find('span',class_='a-size-base').get_text(strip=True)
+            except:
+                rating=None
+            try:
 
-    sleep(3)
+                price=card.find('span',class_='a-price').find('span',class_='a-offscreen').get_text(strip=True)
+            except:
+                price=None
+            
+            features={
+                'Title':products_title,
+                'Product url': "amazon.com"+product_link,
+                'Image url':image_url,
+                'Total reviews':total_reviews,
+                'Rating':rating,
+                'Price':price
+            }
+            data.append(features)
+        break
 
-df= pd.DataFrame(data)
-df.to_excel('PricingAnalysis.xlsx',index=False)
+df=pd.DataFrame(data=data)
+if output_format==0:
+    df.to_excel('products.xlsx',index=False)
+elif output_format==1:
+    df.to_csv('products.xlsx',index=False)
+
+
