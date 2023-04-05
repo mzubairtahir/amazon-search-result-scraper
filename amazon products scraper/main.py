@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 
 total_pages_to_scrape=1
 output_format =  1     # This value can be 0(excel) or 1(csv)
-data=[]
 link_of_second_page_of_search_result= "https://www.amazon.com/s?k=watches+for+man&i=fashion-mens-watches&page=2&qid=1680665242&sprefix=watches+man%2Cfashion-mens-watches%2C2086&ref=sr_pg_2"
 
+data=[]
 
 '''
 In link of 'link_of_second_page_of_search_result' you have to give link of second page 
