@@ -1,28 +1,50 @@
 from playwright.sync_api import sync_playwright
-import time 
+from time import sleep
 import pandas as pd
 from bs4 import BeautifulSoup
 
 #-------------------
 
-total_pages_to_scrape=1
-output_format =  0     # This value can be 0(excel) or 1(csv)
-data=[]
 
-#-------------------------
+total_pages_to_scrape=1
+output_format =  1     # This value can be 0(excel) or 1(csv)
+data=[]
+link_of_second_page_of_search_result= "https://www.amazon.com/s?k=watches+for+man&i=fashion-mens-watches&page=2&qid=1680665242&sprefix=watches+man%2Cfashion-mens-watches%2C2086&ref=sr_pg_2"
+
+
+'''
+In link of 'link_of_second_page_of_search_result' you have to give link of second page 
+of your search result. (not first page)
+
+'''
+
+#-------------------
+
+
+if 'page=2' and 'sr_pg_2' in link_of_second_page_of_search_result:
+    pass
+else:
+    raise Exception("Given link is not valid")
+
+
 
 with sync_playwright() as p:
     browser= p.chromium.launch(headless=True)
     page= browser.new_page()
     for page_number in range(1,total_pages_to_scrape+1):
-        link=f"https://www.amazon.com/s?k=watches+for+man&i=fashion-mens-watches&page={page_number}&qid=1680665242&sprefix=watches+man%2Cfashion-mens-watches%2C2086&ref=sr_pg_{page_number}"
 
-        page.goto(link)
+        link=link_of_second_page_of_search_result.replace('page=2',f'page={page_number}')
+        link=link.replace('sr_pg_2',f'sr_pg_{page_number}')
+
+        page.goto(link,timeout=100000)
+
+
         try:
             products_section=page.query_selector("//*[@id='search']/div[1]/div[1]/div")
         except:
             print('not found')
         else:
+            sleep(1)
             html=products_section.inner_html()
         
         soup=BeautifulSoup(html,'html.parser')
