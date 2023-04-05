@@ -2,7 +2,7 @@
 <html lang="en">
 <body>
 	<h1>Amzon Search Result Scraper</h1>
-<p>A scraper that scrapes the search results from Amazon. 🕵️‍♂️🛍️</p>
+<p>A scraper that scrapes products from the search results of Amazon. 🕵️‍♂️🛍️</p>
 
   <h2>Features of products that it scrapes:</h2>
   <ul>
