@@ -1,22 +1,32 @@
-<h1>Amazon Products Scraper</h1>
-<h2>The ultimate tool for scraping Amazon products!</h2>
-<p>This program is a powerful and efficient Amazon products scraper, designed to gather valuable information about products without the need for a GUI. The scraper is able to extract the following information about a product:</p>
-<ul>
-  <li>:label: Title</li>
-  <li>:moneybag: Price</li>
-  <li>:star: Rating</li>
-  <li>:scroll: Total Reviews</li>
-</ul>
-<p>The data collected by this program can be extremely valuable for market research, competitor analysis, and more. The program is written in Python, making it easily accessible and customizable for users of all skill levels.</p>
-<h2>Key Features</h2>
-<ul>
-  <li>:mag_right: Scrapes valuable information about Amazon products</li>
-  <li>:page_with_curl: Extracts product Title, Price, Rating, and Total Reviews</li>
-  <li>:snake: Written in Python for accessibility and customization</li>
-</ul>
-<p>This program is open-source and available for anyone to view, contribute to, or download. If you find any bugs or have any suggestions for improvements, please feel free to open an issue on the repository or submit a pull request.</p>
-<h2>Thank you</h2>
-<p>Thank you for checking out the Amazon Products Scraper. Happy scraping! :wink:</p>
+<!DOCTYPE html>
+<html lang="en">
+<body>
+	<h1>Amzon Search Result Scraper</h1>
+<p>A scraper that scrapes the search results from Amazon. 🕵️‍♂️🛍️</p>
 
+  <h2>Features of products that it scrapes:</h2>
+  <ul>
+  <li>Title: Product title 📦</li>
+  <li>Product URL: Link to the product page 🔗</li>
+  <li>Image URL: Link to the product image 🖼️</li>
+  <li>Total Reviews: Total number of reviews for the product 🌟</li>
+  <li>Rating: Product rating out of 5 ⭐</li>
+  <li>Price: Product price 💰</li>
+  </ul>
 
+  <p>You can set how many pages you want to scrape and the output format (Excel or CSV). Note that you need to insert the link to the second page of the search results, not the first page.</p>
 
+  <h2>How to use</h2>
+  <ol>
+  <li>Clone the repository to your local machine.</li>
+  <li>Install the required libraries by running the following command:</li>
+  <pre><code>pip install -r requirements.txt</code></pre>
+  <li>Open the <code>main.py</code> file and insert the link of the second page of the search results.</li>
+  <li>Set the number of pages you want to scrape and the output format (Excel or CSV).</li>
+  <li>Run <code>main.py</code>. The scraped data will be saved in a file named <code>products.xlsx</code> or <code>products.csv</code> depending on the output format you chose.</li>
+  </ol>
+
+  <h2>Contributing</h2>
+  <p>Contributions are welcome! Feel free to submit a pull request. 🤝👨‍💻👩‍💻</p>
+  </body>
+  </html>
